@@ -1,0 +1,218 @@
+<div className={styles['asset-list-page']}>
+      {/* 页面标题和搜索区域 */}
+      <div className={styles['page-header']}>
+        <div className={styles['header-content']}>
+          <div className={styles['title-section']}>
+            <h2>備品一覧</h2>
+            <p>系统中共有 {assets.length} 个资产设备</p>
+          </div>
+          <div className={styles['search-section']}>
+            <div className={styles['search-box']}>
+              <input
+                type="text"
+                placeholder="搜索物品名称、ID或描述..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles['search-input']}
+              />
+              <span className={styles['search-icon']}>🔍</span>
+            </div>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className={styles['category-filter']}
+            >
+              {categories.map(category => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* 资产列表 */}
+      <div className={styles['asset-list-container']}>
+        {filteredAssets.length === 0 ? (
+          <div className={styles['empty-state']}>
+            <div className={styles['empty-icon']}>📦</div>
+            <h3>未找到匹配的资产</h3>
+            <p>请尝试调整搜索条件或分类筛选</p>
+          </div>
+        ) : (
+          <div className={styles['asset-grid']}>
+            {filteredAssets.map(asset => (
+              <div
+                key={asset.id}
+                className={`asset-card ${asset.status === 'available' ? 'clickable' : ''}`}
+                onClick={() => handleAssetClick(asset)}
+              >
+                {/* 缩略图区域 */}
+                <div className={styles['asset-thumbnail']}>
+                  <div className={styles['thumbnail-icon']}>
+                    {asset.thumbnail}
+                  </div>
+                  {asset.status === 'available' && (
+                    <div className={styles['available-overlay']}>
+                      <span>点击借阅</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 资产信息 */}
+                <div className={styles['asset-info']}>
+                  <div className={styles['asset-header']}>
+                    <h3 className={styles['asset-name']}>{asset.name}</h3>
+                    {getStatusBadge(asset.status)}
+                  </div>
+                  
+                  <div className={styles['asset-id']}>ID: {asset.id}</div>
+                  
+                  <div className={styles['asset-category']}>
+                    <span className={styles['category-label']}>分类:</span>
+                    <span className={styles['category-value']}>{asset.category}</span>
+                  </div>
+                  
+                  <div className={styles['asset-description']}>
+                    {asset.description}
+                  </div>
+
+                  {/* 操作按钮 */}
+                  <div className={styles['asset-actions']}>
+                    {asset.status === 'available' ? (
+                      <button className={styles['borrow-button']}>
+                        立即借阅
+                      </button>
+                    ) : asset.status === 'borrowed' ? (
+                      <button className={styles['request-button']} disabled>
+                        已借出
+                      </button>
+                    ) : (
+                      <button className={styles['maintenance-button']} disabled>
+                        维护中
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 统计信息 */}
+      <div className={styles['stats-bar']}>
+        <div className={styles['stat-item']}>
+          <span className={styles['stat-number']}>{assets.filter(a => a.status === 'available').length}</span>
+          <span className={styles['stat-label']}>可借阅</span>
+        </div>
+        <div className={styles['stat-item']}>
+          <span className={styles['stat-number']}>{assets.filter(a => a.status === 'borrowed').length}</span>
+          <span className={styles['stat-label']}>已借出</span>
+        </div>
+        <div className={styles['stat-item']}>
+          <span className={styles['stat-number']}>{assets.filter(a => a.status === 'maintenance').length}</span>
+          <span className={styles['stat-label']}>维护中</span>
+        </div>
+      </div>
+      {/* 借阅申请弹框 */}
+      {showBorrowModal && selectedAsset && (
+        <div className={styles['modal-overlay']}>
+          <div className={styles['borrow-modal']}>
+            <div className={styles['modal-header']}>
+              <h3>借阅申请 - {selectedAsset.name}</h3>
+              <button className={styles['close-button']} onClick={handleCloseModal}>×</button>
+            </div>
+
+            <div className={styles['modal-content']}>
+              {/* 资产信息概览 */}
+              <div className={styles['asset-overview']}>
+                <div className={styles['asset-thumbnail-large']}>
+                  <div className={styles['thumbnail-icon-large']}>
+                    {selectedAsset.thumbnail}
+                  </div>
+                </div>
+                <div className={styles['asset-details']}>
+                  <h4>{selectedAsset.name}</h4>
+                  <div className={styles['asset-id-modal']}>ID: {selectedAsset.id}</div>
+                  <div className={styles['asset-category-modal']}>{selectedAsset.category}</div>
+                  <div className={styles['asset-description-modal']}>{selectedAsset.description}</div>
+                </div>
+              </div>
+
+              {/* 规格信息 */}
+              <div className={styles.specifications}>
+                <h5>规格参数</h5>
+                <div className={styles['spec-grid']}>
+                  {Object.entries(selectedAsset.specifications || {}).map(([key, value]) => (
+                    <div key={key} className={styles['spec-item']}>
+                      <span className={styles['spec-label']}>{key}:</span>
+                      <span className={styles['spec-value']}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 借阅表单 */}
+              <div className={styles['borrow-form']}>
+                <div className={styles['form-row']}>
+                  <div className={styles['form-group']}>
+                    <label>借出日期 *</label>
+                    <input
+                      type="date"
+                      value={borrowForm.borrowDate}
+                      onChange={(e) => handleInputChange('borrowDate', e.target.value)}
+                      min={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                  <div className={styles['form-group']}>
+                    <label>预计归还日期 *</label>
+                    <input
+                      type="date"
+                      value={borrowForm.returnDate}
+                      onChange={(e) => handleInputChange('returnDate', e.target.value)}
+                      min={borrowForm.borrowDate || new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles['form-group']}>
+                  <label>借阅用途 *</label>
+                  <select
+                    value={borrowForm.purpose}
+                    onChange={(e) => handleInputChange('purpose', e.target.value)}
+                  >
+                    <option value="">请选择借阅用途</option>
+                    <option value="project">项目开发</option>
+                    <option value="meeting">会议使用</option>
+                    <option value="presentation">演示展示</option>
+                    <option value="training">培训教学</option>
+                    <option value="other">其他</option>
+                  </select>
+                </div>
+
+                <div className={styles['form-group']}>
+                  <label>详细说明</label>
+                  <textarea
+                    placeholder="请详细描述您的使用需求..."
+                    value={borrowForm.notes}
+                    onChange={(e) => handleInputChange('notes', e.target.value)}
+                    rows="3"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles['modal-footer']}>
+              <button className={styles['cancel-button']} onClick={handleCloseModal}>
+                取消
+              </button>
+              <button className={styles['submit-button']} onClick={handleSubmitBorrow}>
+                提交申请
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>

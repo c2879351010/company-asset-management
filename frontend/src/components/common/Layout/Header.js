@@ -1,26 +1,30 @@
-import { useNavigate } from "react-router-dom";
+// src/components/Layout/Header.js
+import { useNavigate } from 'react-router-dom';
+import styles from './Layout.module.css';
 
-const Header = () =>{
-    const navigate = useNavigate();
-    const HandleLogout = () =>{
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
-    return(
-        <header className="header">
-            <div className="header-brand">
-                <h1>Test</h1>
-            </div>
-            <div className="header-user">
-                <span>Yes</span>
-                <button onClick = {HandleLogout} className="logout-btn"> 
-                 logout
-                </button>
-            </div>
+const Header = () => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        </header>
-    )
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
+
+  return (
+    <header className={styles["header"]}>
+      <div className="header-brand">
+        <h1>社内備品管理システム</h1>
+      </div>
+      <div className={styles["header-user"]}>
+        <span>こんにちは、{user.name}さん</span>
+        <button onClick={handleLogout} className={styles["logout-btn"]}>
+          ログアウト
+        </button>
+      </div>
+    </header>
+  );
 };
 
 export default Header;

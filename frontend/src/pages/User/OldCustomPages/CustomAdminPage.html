@@ -1,0 +1,215 @@
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'applications':
+        return (
+          <div className={styles.tabContent}>
+            <div className={styles.contentHeader}>
+              <h2>申請管理</h2>
+              <p>資産貸出申請と承認プロセスを処理</p>
+            </div>
+            <div className={styles.statsOverview}>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#fff3cd' }}>
+                  ⏳
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{applicationStats.pending}</div>
+                  <div className={styles.statLabel}>保留中</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#d1edff' }}>
+                  ✅
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{applicationStats.approved}</div>
+                  <div className={styles.statLabel}>承認済み</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#f8d7da' }}>
+                  ❌
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{applicationStats.rejected}</div>
+                  <div className={styles.statLabel}>拒否済み</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#e2e3e5' }}>
+                  📊
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{applicationStats.total}</div>
+                  <div className={styles.statLabel}>合計</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.placeholder}>
+              <div className={styles.placeholderIcon}>📋</div>
+              <h3>申請管理機能</h3>
+              <p>ここに貸出申請リスト、承認操作などの機能が表示されます</p>
+            </div>
+          </div>
+        );
+
+      case 'assets':
+        return (
+          <div className={styles.tabContent}>
+            <div className={styles.contentHeader}>
+              <h2>資産管理</h2>
+              <p>システム内の全ての資産情報を管理</p>
+            </div>
+            <div className={styles.statsOverview}>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#d1edff' }}>
+                  📦
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{assetStats.total}</div>
+                  <div className={styles.statLabel}>総資産数</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#d4edda' }}>
+                  ✅
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{assetStats.available}</div>
+                  <div className={styles.statLabel}>貸出可能</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#fff3cd' }}>
+                  🔄
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{assetStats.borrowed}</div>
+                  <div className={styles.statLabel}>貸出中</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#f8d7da' }}>
+                  🔧
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{assetStats.maintenance}</div>
+                  <div className={styles.statLabel}>メンテナンス中</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.placeholder}>
+              <div className={styles.placeholderIcon}>💻</div>
+              <h3>資産管理機能</h3>
+              <p>ここに資産リスト、資産追加、資産情報編集などの機能が表示されます</p>
+            </div>
+          </div>
+        );
+
+      case 'users':
+        return (
+          <div className={styles.tabContent}>
+            <div className={styles.contentHeader}>
+              <h2>ユーザー管理</h2>
+              <p>システムユーザーと権限設定を管理</p>
+            </div>
+            <div className={styles.statsOverview}>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#d1edff' }}>
+                  👥
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{userStats.total}</div>
+                  <div className={styles.statLabel}>総ユーザー数</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#d4edda' }}>
+                  ✅
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{userStats.active}</div>
+                  <div className={styles.statLabel}>アクティブユーザー</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#e2e3e5' }}>
+                  ⏸️
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{userStats.inactive}</div>
+                  <div className={styles.statLabel}>非アクティブ</div>
+                </div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.statIcon} style={{ background: '#fff3cd' }}>
+                  🔧
+                </div>
+                <div className={styles.statInfo}>
+                  <div className={styles.statNumber}>{userStats.admin}</div>
+                  <div className={styles.statLabel}>管理者</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.placeholder}>
+              <div className={styles.placeholderIcon}>👤</div>
+              <h3>ユーザー管理機能</h3>
+              <p>ここにユーザーリスト、権限管理、ユーザー情報編集などの機能が表示されます</p>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className={styles.page}>
+      {/* ページタイトル */}
+      <div className={styles.pageHeader}>
+        <h1>システム管理</h1>
+        <p>システム設定、資産とユーザー情報を管理</p>
+      </div>
+
+      <div className={styles.adminContainer}>
+        {/* サイドナビゲーション */}
+        <div className={styles.sidebar}>
+          <nav className={styles.nav}>
+            <button
+              className={`${styles.navItem} ${activeTab === 'applications' ? styles.active : ''}`}
+              onClick={() => setActiveTab('applications')}
+            >
+              <span className={styles.navIcon}>📋</span>
+              <span className={styles.navText}>申請管理</span>
+              {applicationStats.pending > 0 && (
+                <span className={styles.badge}>{applicationStats.pending}</span>
+              )}
+            </button>
+
+            <button
+              className={`${styles.navItem} ${activeTab === 'assets' ? styles.active : ''}`}
+              onClick={() => setActiveTab('assets')}
+            >
+              <span className={styles.navIcon}>💻</span>
+              <span className={styles.navText}>資産管理</span>
+            </button>
+
+            <button
+              className={`${styles.navItem} ${activeTab === 'users' ? styles.active : ''}`}
+              onClick={() => setActiveTab('users')}
+            >
+              <span className={styles.navIcon}>👥</span>
+              <span className={styles.navText}>ユーザー管理</span>
+            </button>
+          </nav>
+            
+        </div>
+
+        {/* メインコンテンツエリア */}
+        <div className={styles.mainContent}>
+          {renderContent()}
+        </div>
+      </div>
+    </div>
+  );

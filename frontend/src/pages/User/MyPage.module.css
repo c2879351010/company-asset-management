@@ -1,0 +1,526 @@
+/* src/pages/MyPage.module.css */
+.page {
+  animation: fadeIn 0.3s ease-in;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: 30px;
+}
+
+.pageHeader h1 {
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.pageHeader p {
+  color: #666;
+  margin: 0;
+  font-size: 16px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* 个人信息卡片 */
+.profileCard {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #4caf50;
+}
+
+.avatarSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.avatarInfo h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.avatarInfo p {
+  margin: 0 0 8px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e8f5e8;
+  color: #4caf50;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.nameRole {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.adminBadge {
+  background: #ff4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.userBadge {
+  background: #2196f3;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.profileDetails {
+  margin-bottom: 25px;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detailItem:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  color: #333;
+  font-weight: 500;
+}
+
+.editButton {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 权限说明卡片 */
+.permissionCard {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #ff9800;
+}
+
+.permissionCard h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.permissionList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.permissionItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.permissionIcon {
+  font-size: 18px;
+}
+
+.permissionText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.permissionText strong {
+  color: #333;
+  font-size: 14px;
+}
+
+.permissionText span {
+  color: #666;
+  font-size: 12px;
+}
+
+/* 登录信息卡片 */
+.loginCard {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #2196f3;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.cardHeader h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.editLoginButton {
+  padding: 6px 12px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editLoginButton:hover {
+  background: #1976d2;
+}
+
+/* 登录信息显示 */
+.loginInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.infoLabel {
+  color: #666;
+  font-weight: 500;
+}
+
+.infoValue {
+  color: #333;
+  font-weight: 500;
+}
+
+.securityTip {
+  padding: 10px;
+  background: #e3f2fd;
+  border-radius: 6px;
+  color: #1976d2;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* 登录表单 */
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.formGroup input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #2196f3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.disabledInput {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 10px;
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #e0e0e0;
+}
+
+.saveButton {
+  flex: 1;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saveButton:hover {
+  background: #45a049;
+}
+
+/* 借出记录卡片 */
+.borrowCard {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #9c27b0;
+}
+
+.recordCount {
+  color: #666;
+  font-size: 12px;
+}
+
+.recordsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.recordItem {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.recordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.assetInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.assetName {
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.assetId {
+  color: #666;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+/* 状态标签 */
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.statusBorrowed {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.statusReturned {
+  background: #d1edff;
+  color: #0c5460;
+}
+
+.statusOverdue {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.statusDefault {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.recordDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.detailRow span:first-child {
+  color: #666;
+}
+
+.detailRow span:last-child {
+  color: #333;
+  font-weight: 500;
+}
+
+.notes {
+  color: #666 !important;
+  font-style: italic;
+}
+
+.viewAllButton {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewAllButton:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .profileCard,
+  .permissionCard,
+  .loginCard,
+  .borrowCard {
+    padding: 20px;
+  }
+  
+  .avatarSection {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .nameRole {
+    justify-content: center;
+  }
+  
+  .recordHeader {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+}
