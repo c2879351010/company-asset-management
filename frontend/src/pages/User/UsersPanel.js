@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {
     Row,
     Col,
@@ -6,10 +7,122 @@ import {
     Button,
     Form,
     Table,
-    Pagination
+    Pagination,
+    Modal
   } from 'react-bootstrap';
   
   function UsersPanel({ stats }) {
+    const [showUserModal, setShowUserModal] = useState(false);
+    const [newUser, setNewUser] = useState({
+      lastName: '',
+      firstName: '',
+      email: '',
+      phone: '',
+      department: '',
+      position: '',
+      role: 'user',
+      status: 'active'
+    });
+
+    // 部门选项
+    const departmentOptions = [
+      '技術部',
+      'デザイン部',
+      '営業部',
+      '人事部',
+      'ITインフラ部',
+      'マーケティング部',
+      '財務部',
+      '総務部'
+    ];
+
+    // 职位选项
+    const positionOptions = [
+      'システムエンジニア',
+      'フロントエンド開発者',
+      'バックエンド開発者',
+      'UI/UXデザイナー',
+      '営業マネージャー',
+      '営業担当',
+      '人事担当',
+      'ネットワークエンジニア',
+      'マーケティング担当',
+      '財務アナリスト',
+      '総務担当'
+    ];
+
+    // 处理新規ユーザー追加按钮点击
+    const handleAddUserClick = () => {
+      setNewUser({
+        lastName: '',
+        firstName: '',
+        email: '',
+        phone: '',
+        department: '',
+        position: '',
+        role: 'user',
+        status: 'active'
+      });
+      setShowUserModal(true);
+    };
+
+    // 处理用户表单输入变化
+    const handleUserInputChange = (field, value) => {
+      setNewUser(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    };
+
+    // 提交新規ユーザー
+    const handleSubmitNewUser = () => {
+      // 验证必填字段
+      if (!newUser.lastName || !newUser.firstName || !newUser.email || !newUser.department) {
+        alert('必須項目を入力してください');
+        return;
+      }
+
+      // 邮箱格式验证
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(newUser.email)) {
+        alert('有効なメールアドレスを入力してください');
+        return;
+      }
+
+      // 这里可以添加API调用
+      console.log('新規ユーザーを追加:', newUser);
+
+      // 模拟提交成功
+      alert('ユーザーが正常に追加されました');
+      setShowUserModal(false);
+      
+      // 重置表单
+      setNewUser({
+        lastName: '',
+        firstName: '',
+        email: '',
+        phone: '',
+        department: '',
+        position: '',
+        role: 'user',
+        status: 'active'
+      });
+    };
+
+    // 关闭用户弹框
+    const handleCloseUserModal = () => {
+      setShowUserModal(false);
+      setNewUser({
+        lastName: '',
+        firstName: '',
+        email: '',
+        phone: '',
+        department: '',
+        position: '',
+        role: 'user',
+        status: 'active'
+      });
+    };
     return (
       <div>
         {/* 内容头部 */}
@@ -19,7 +132,9 @@ import {
               <h2>ユーザー管理</h2>
               <p className="text-muted mb-0">システムユーザーのアカウントと権限を管理</p>
             </div>
-            <Button variant="primary" className="d-flex align-items-center">
+            <Button variant="primary" 
+              className="d-flex align-items-center"
+              onClick={handleAddUserClick}>
               <span className="me-2">👤</span>
               新規ユーザー追加
             </Button>
@@ -538,6 +653,271 @@ import {
             </Card>
           </Col>
         </Row>
+
+        {/* 新規ユーザー追加モーダル */}
+        <Modal 
+          show={showUserModal} 
+          onHide={handleCloseUserModal}
+          size="lg"
+          centered
+        >
+          <Modal.Header closeButton className="border-0">
+            <Modal.Title className="d-flex align-items-center">
+              <span className="me-2">👤</span>
+              新規ユーザー追加
+            </Modal.Title>
+          </Modal.Header>
+          
+          <Modal.Body className="p-4">
+            <Form>
+              <Row className="g-3">
+                {/* ユーザー基本情報 */}
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      姓 <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="例: 山田"
+                      value={newUser.lastName}
+                      onChange={(e) => handleUserInputChange('lastName', e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      名 <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="例: 太郎"
+                      value={newUser.firstName}
+                      onChange={(e) => handleUserInputChange('firstName', e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      メールアドレス <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="例: yamada@company.com"
+                      value={newUser.email}
+                      onChange={(e) => handleUserInputChange('email', e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>電話番号</Form.Label>
+                    <Form.Control
+                      type="tel"
+                      placeholder="例: 090-1234-5678"
+                      value={newUser.phone}
+                      onChange={(e) => handleUserInputChange('phone', e.target.value)}
+                    />
+                  </Form.Group>
+                </Col>
+                
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      部署 <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Select
+                      value={newUser.department}
+                      onChange={(e) => handleUserInputChange('department', e.target.value)}
+                    >
+                      <option value="">部署を選択</option>
+                      {departmentOptions.map(dept => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>役職</Form.Label>
+                    <Form.Select
+                      value={newUser.position}
+                      onChange={(e) => handleUserInputChange('position', e.target.value)}
+                    >
+                      <option value="">役職を選択</option>
+                      {positionOptions.map(position => (
+                        <option key={position} value={position}>
+                          {position}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                
+                {/* 権限とステータス */}
+                <Col md={12}>
+                  <Card className="border-0 bg-light">
+                    <Card.Body>
+                      <Row className="g-4">
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>権限レベル</Form.Label>
+                            <div>
+                              <Form.Check
+                                type="radio"
+                                name="userRole"
+                                label="一般ユーザー"
+                                value="user"
+                                checked={newUser.role === 'user'}
+                                onChange={(e) => handleUserInputChange('role', e.target.value)}
+                                className="mb-2"
+                              />
+                              <Form.Check
+                                type="radio"
+                                name="userRole"
+                                label="管理者"
+                                value="admin"
+                                checked={newUser.role === 'admin'}
+                                onChange={(e) => handleUserInputChange('role', e.target.value)}
+                              />
+                            </div>
+                          </Form.Group>
+                        </Col>
+                        
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>アカウントステータス</Form.Label>
+                            <div>
+                              <Form.Check
+                                type="radio"
+                                name="userStatus"
+                                label="アクティブ"
+                                value="active"
+                                checked={newUser.status === 'active'}
+                                onChange={(e) => handleUserInputChange('status', e.target.value)}
+                                className="mb-2"
+                              />
+                              <Form.Check
+                                type="radio"
+                                name="userStatus"
+                                label="非アクティブ"
+                                value="inactive"
+                                checked={newUser.status === 'inactive'}
+                                onChange={(e) => handleUserInputChange('status', e.target.value)}
+                              />
+                            </div>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                
+                {/* パスワード設定（オプション） */}
+                <Col md={12}>
+                  <Card className="border-0 bg-light">
+                    <Card.Body>
+                      <h6 className="mb-3">🔐 初期パスワード設定</h6>
+                      <Row className="g-3">
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>初期パスワード</Form.Label>
+                            <Form.Control
+                              type="password"
+                              placeholder="初期パスワードを入力"
+                              defaultValue="password123" // デフォルトパスワード
+                            />
+                            <Form.Text className="text-muted">
+                              ユーザーは初回ログイン時にパスワード変更を促されます
+                            </Form.Text>
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>パスワード確認</Form.Label>
+                            <Form.Control
+                              type="password"
+                              placeholder="パスワードを再入力"
+                              defaultValue="password123"
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                
+                {/* ユーザープレビュー */}
+                <Col md={12}>
+                  <Card className="border-0" style={{background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}>
+                    <Card.Body className="text-white">
+                      <h6 className="mb-3">👀 ユーザープレビュー</h6>
+                      <Row className="align-items-center">
+                        <Col xs="auto">
+                          <div 
+                            className="rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ 
+                              width: '50px', 
+                              height: '50px', 
+                              background: 'rgba(255,255,255,0.2)',
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '18px'
+                            }}
+                          >
+                            {newUser.lastName.charAt(0) || 'U'}
+                          </div>
+                        </Col>
+                        <Col>
+                          <div className="fw-bold fs-5">
+                            {newUser.lastName} {newUser.firstName}
+                          </div>
+                          <div className="opacity-75">
+                            {newUser.department && `${newUser.department}`}
+                            {newUser.position && ` • ${newUser.position}`}
+                          </div>
+                          <div className="opacity-75 small">
+                            {newUser.email}
+                          </div>
+                        </Col>
+                        <Col xs="auto">
+                          <Badge bg={newUser.role === 'admin' ? 'warning' : 'light'} text={newUser.role === 'admin' ? 'dark' : 'dark'}>
+                            {newUser.role === 'admin' ? '管理者' : '一般ユーザー'}
+                          </Badge>
+                        </Col>
+                      </Row>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </Form>
+          </Modal.Body>
+          
+          <Modal.Footer className="border-0">
+            <Button 
+              variant="outline-secondary" 
+              onClick={handleCloseUserModal}
+            >
+              キャンセル
+            </Button>
+            <Button 
+              variant="primary" 
+              onClick={handleSubmitNewUser}
+              className="d-flex align-items-center"
+            >
+              <span className="me-2">✅</span>
+              ユーザーを追加
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

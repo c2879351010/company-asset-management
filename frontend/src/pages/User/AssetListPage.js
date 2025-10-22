@@ -15,6 +15,7 @@ import {
   Nav
 } from 'react-bootstrap';
 
+import { assetRole } from '@types/common';
 const AssetListPage = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
@@ -132,7 +133,7 @@ const AssetListPage = () => {
       status: 'available',
       thumbnail: '❤️',
       image: '/images/macbook-pro.jpg'
-    }
+    }   
   ];
 
   // 分类选项
