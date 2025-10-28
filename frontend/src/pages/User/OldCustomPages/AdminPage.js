@@ -11,23 +11,19 @@ import {
 import ApplicationsPanel from './ApplicationsPanel';
 import AssetsPanel from './AssetsPanel';
 import UsersPanel from './UsersPanel';
+import { useParams } from 'react-router-dom';
 
 function AdminPage() {
-  const [activeTab, setActiveTab] = useState('applications');
-
+  const { tab } = useParams(); // 假设路由是 /adminpage/:tab
+  
+  // 使用路由参数代替 useState
+  const [activeTab, setActiveTab] = tab || 'applications';
   // モックデータ
   const applicationStats = {
     pending: 12,
     approved: 45,
     rejected: 8,
     total: 65
-  };
-
-  const assetStats = {
-    total: 156,
-    available: 89,
-    borrowed: 42,
-    maintenance: 25
   };
 
   const userStats = {
@@ -42,7 +38,7 @@ function AdminPage() {
       case 'applications':
         return <ApplicationsPanel stats={applicationStats} />;
       case 'assets':
-        return <AssetsPanel stats={assetStats} />;
+        return <AssetsPanel />;
       case 'users':
         return <UsersPanel stats={userStats} />;
       default:

@@ -1,8 +1,11 @@
 import { NavLink } from 'react-router-dom';
+import { useState } from 'react';
 import styles from './Layout.module.css';
 
 const Sidebar = () => {
   const userRole = JSON.parse(localStorage.getItem('user') || '{}').role;
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+
 
   return (
     <nav className={styles["sidebar"]}>
@@ -27,21 +30,44 @@ const Sidebar = () => {
         {/* 管理者のみ表示 */}
         {userRole === 'admin' && (
           <>
-            <li>
-              <NavLink 
-                to="/adminpage" 
-                className={({ isActive }) => isActive ? styles['active'] : ''}
+            <li className={styles["admin-menu"]}>
+              <div 
+                className={`${styles["admin-menu-header"]} ${adminMenuOpen ? styles["active"] : ''}`}
+                onClick={() => setAdminMenuOpen(!adminMenuOpen)}
               >
                 管理画面
-              </NavLink>
-            </li>
-            <li>
-              <NavLink 
-                to="/reports" 
-                className={({ isActive }) => isActive ? styles['active'] : ''}
-              >
-                レポート
-              </NavLink>
+                <span className={styles["dropdown-arrow"]}>
+                  {adminMenuOpen ? '▲' : '▼'} 
+                </span>
+              </div>
+              {adminMenuOpen && (
+                <ul className={styles["admin-submenu"]}>
+                  <li>
+                    <NavLink 
+                      to="/adminpage/applications" 
+                      className={({ isActive }) => isActive ? styles['active'] : ''}
+                    >
+                      申請管理
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink 
+                      to="/adminpage/assets" 
+                      className={({ isActive }) => isActive ? styles['active'] : ''}
+                    >
+                      資産管理
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink 
+                      to="/adminpage/users" 
+                      className={({ isActive }) => isActive ? styles['active'] : ''}
+                    >
+                      ユーザー管理
+                    </NavLink>
+                  </li>
+                </ul>
+              )}
             </li>
           </>
         )}

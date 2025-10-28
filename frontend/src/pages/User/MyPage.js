@@ -1,17 +1,26 @@
 import { useState } from 'react';
-import styles from './MyPage.module.css';
-
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Badge,
+  InputGroup
+} from 'react-bootstrap';
+import { userRole } from '@types/common';
 function MyPage() {
   const [userInfo, setUserInfo] = useState({
+    ...userRole,
     name: '山田 太郎',
     email: 'yamada@example.com',
-    phone: '090-1234-5678',
-    department: '技術部',
-    position: 'フロントエンドエンジニア',
-    joinDate: '2022-03-15',
-    role: 'admin' // 'admin' または 'user'
+    employeeId: 'aAdD1234-5678',
+    role: 'admin' ,
   });
 
+  const [isEditing, setIsEditing] = useState(false);
+  
   const [loginInfo, setLoginInfo] = useState({
     currentEmail: 'yamada@example.com',
     newEmail: '',
@@ -19,6 +28,45 @@ function MyPage() {
     newPassword: '',
     confirmPassword: ''
   });
+
+  const handleSaveAll = () => {
+    // 個人情報の保存ロジック
+    console.log('個人情報を保存:', userInfo);
+    
+    // パスワード変更のロジック（パスワードが入力されている場合）
+    if (loginInfo.newPassword) {
+      console.log('パスワードを変更:', loginInfo);
+    }
+    
+    // 状態をリセット
+    setIsEditing(false);
+    setLoginInfo(prev => ({
+      ...prev,
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    }));
+    
+    alert('変更が保存されました');
+  };
+
+  // フォームバリデーション
+  const isFormValid = () => {
+    // パスワードが入力されている場合は確認
+    if (loginInfo.newPassword) {
+      return loginInfo.newPassword === loginInfo.confirmPassword && 
+            loginInfo.currentPassword.length > 0;
+    }
+    return true; // パスワード変更なしの場合は常に有効
+  };
+
+  // ログイン情報変更ハンドラーの更新
+  const handleLoginInfoChange = (field, value) => {
+    setLoginInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   const [isEditingLogin, setIsEditingLogin] = useState(false);
 
@@ -62,13 +110,6 @@ function MyPage() {
     }
   ];
 
-  const handleLoginInfoChange = (field, value) => {
-    setLoginInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
   const handleSaveLoginInfo = () => {
     // ここにログイン情報保存のロジックを追加
     console.log('ログイン情報を保存:', loginInfo);
@@ -95,282 +136,232 @@ function MyPage() {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      borrowed: { label: '貸出中', class: styles.statusBorrowed },
-      returned: { label: '返却済み', class: styles.statusReturned },
-      overdue: { label: '期限超過', class: styles.statusOverdue }
+      borrowed: { label: '貸出中', variant: 'primary' },
+      returned: { label: '返却済み', variant: 'success' },
+      overdue: { label: '期限超過', variant: 'danger' }
     };
     
-    const config = statusConfig[status] || { label: status, class: styles.statusDefault };
-    return <span className={`${styles.statusBadge} ${config.class}`}>{config.label}</span>;
+    const config = statusConfig[status] || { label: status, variant: 'secondary' };
+    return <Badge bg={config.variant}>{config.label}</Badge>;
   };
 
   const getRoleBadge = (role) => {
     return role === 'admin' 
-      ? <span className={styles.adminBadge}>管理者</span>
-      : <span className={styles.userBadge}>一般ユーザー</span>;
+      ? <Badge bg="warning" className="ms-2">管理者</Badge>
+      : <Badge bg="info" className="ms-2">一般ユーザー</Badge>;
   };
 
   return (
-    <div className={styles.page}>
+    <Container fluid className="p-4">
       {/* ページタイトル */}
-      <div className={styles.pageHeader}>
-        <h1>マイページ</h1>
-        <p>個人情報と設定を管理</p>
-      </div>
-
-      <div className={styles.content}>
+      <Col className='mb-1'>
+        <Card className="border-0 shadow-sm">
+        <Card.Body className="p-4">
+          <Col md={4}>
+            <div className="d-flex flex-column">
+            <h2 className="mb-2 fw-bold">マイページ</h2>
+            <p className="text-muted mb-0">個人情報と設定を管理</p>                            </div>
+          </Col>
+        </Card.Body>
+        </Card>
+      </Col>
+      <Row className='d-flex '>
         {/* 左カラム - 個人情報と権限 */}
-        <div className={styles.leftColumn}>
-          {/* 個人情報カード */}
-          <div className={styles.profileCard}>
-            <div className={styles.avatarSection}>
-              <div className={styles.avatar}>
-                {userInfo.name.charAt(0)}
+        <Col lg={3} className="d-flex" >
+          <Card className="shadow-sm  flex-grow-1 d-flex flex-column">
+            <Card.Body className="p-4 d-flex flex-column" style={{ height: '100%' }}>
+              {/* ヘッダー部分 */}
+              <div className="mb-4">
+                  <h5 className="mb-0">個人情報とログイン設定</h5>
               </div>
-              <div className={styles.avatarInfo}>
-                <div className={styles.nameRole}>
-                  <h3>{userInfo.name}</h3>
-                  {getRoleBadge(userInfo.role)}
+              <div className='flex-grow-1 d-flex flex-column justify-content-evenly'>
+                {/* 個人情報セクション */}
+                <div className="d-flex flex-column p-4 shadow-sm">
+                  <h6 className="border-bottom pb-2 mb-3">個人情報</h6>
+                  <div className="d-flex align-items-start mb-4">
+                    <div 
+                      className="d-flex align-items-center justify-content-center rounded-circle me-3"
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        color: 'white',
+                        fontSize: '1.2rem',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {userInfo.name.charAt(0)}
+                    </div>
+                    <div className="flex-grow-1">
+                      <div className="d-flex align-items-start mb-1">
+                        <h6 className="mb-0 me-2">{userInfo.name}</h6>
+                        {getRoleBadge(userInfo.role)}
+                      </div>
+                      <p className="text-muted mb-1 small">{userInfo.employeeId}</p>
+                    </div>
+                  </div>
+
+                  {/* 個人情報表示 */}
+                  <div className="small">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="text-muted">メールアドレス:</span>
+                      <span className="fw-medium">{userInfo.email}</span>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="text-muted">権限レベル:</span>
+                      <span className="fw-medium">
+                        {userInfo.role === 'admin' ? 'システム管理者' : '一般ユーザー'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <p>{userInfo.position}</p>
-                <span className={styles.status}>オンライン</span>
-              </div>
-            </div>
-            
-            <div className={styles.profileDetails}>
-              <div className={styles.detailItem}>
-                <span className={styles.label}>メールアドレス:</span>
-                <span className={styles.value}>{userInfo.email}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.label}>電話番号:</span>
-                <span className={styles.value}>{userInfo.phone}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.label}>部署:</span>
-                <span className={styles.value}>{userInfo.department}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.label}>入社日:</span>
-                <span className={styles.value}>{userInfo.joinDate}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.label}>権限レベル:</span>
-                <span className={styles.value}>
-                  {userInfo.role === 'admin' ? 'システム管理者' : '一般ユーザー'}
-                </span>
-              </div>
-            </div>
+                
+                {/* 個人情報編集セクション */}
+                <div className="d-flex flex-column p-4 shadow-sm mt-4">
+                  <div>
+                    <h6 className="border-bottom pb-2 mb-3">個人情報編集</h6>
+                    
+                    <Form.Group className="mb-2">
+                      <Form.Label className="small fw-bold">氏名</Form.Label>
+                      <Form.Control 
+                        size="sm"
+                        value={userInfo.name}
+                        onChange={(e) => setUserInfo(prev => ({...prev, name: e.target.value}))}
+                        placeholder="氏名を入力"
+                      />
+                    </Form.Group>
+                    
+                    <Form.Group className="mb-2">
+                      <Form.Label className="small fw-bold">メールアドレス</Form.Label>
+                      <Form.Control 
+                        size="sm"
+                        type="email" 
+                        value={userInfo.email}
+                        onChange={(e) => setUserInfo(prev => ({...prev, email: e.target.value}))}
+                        placeholder="メールアドレスを入力"
+                      />
+                    </Form.Group>
+                  </div>
+                  {/* パスワード変更セクション */}
+                  <div >
+                    <h6 className="border-bottom pb-2 mb-3">パスワード変更</h6>
+                    
+                    <Form.Group className="mb-2">
+                      <Form.Label className="small fw-bold">現在のパスワード</Form.Label>
+                      <Form.Control 
+                        size="sm"
+                        type="password" 
+                        value={loginInfo.currentPassword}
+                        onChange={(e) => handleLoginInfoChange('currentPassword', e.target.value)}
+                        placeholder="現在のパスワードを入力"
+                      />
+                    </Form.Group>
+                    
+                    <Form.Group className="mb-2">
+                      <Form.Label className="small fw-bold">新しいパスワード</Form.Label>
+                      <Form.Control 
+                        size="sm"
+                        type="password" 
+                        value={loginInfo.newPassword}
+                        onChange={(e) => handleLoginInfoChange('newPassword', e.target.value)}
+                        placeholder="新しいパスワードを入力"
+                      />
+                    </Form.Group>
+                    
+                    <Form.Group className="mb-3">
+                      <Form.Label className="small fw-bold">新しいパスワード（確認）</Form.Label>
+                      <Form.Control 
+                        size="sm"
+                        type="password" 
+                        value={loginInfo.confirmPassword}
+                        onChange={(e) => handleLoginInfoChange('confirmPassword', e.target.value)}
+                        placeholder="新しいパスワードを再入力"
+                      />
+                    </Form.Group>
+                  </div>
 
-            <button className={styles.editButton}>
-              ✏️ 個人情報を編集
-            </button>
-          </div>
+                  {/* 保存ボタン */}
+                  <div className=" border-top">
+                    <div className="d-flex gap-2">
+                      <Button 
+                        variant="primary" 
+                        className="flex-grow-1"
+                        onClick={handleSaveAll}
+                        disabled={!isFormValid()}
+                        size="sm"
+                      >
+                        💾 保存
+                      </Button>
+                    </div>
+                  </div>
 
-          {/* 権限説明カード */}
-          <div className={styles.permissionCard}>
-            <h3>権限説明</h3>
-            <div className={styles.permissionList}>
-              {userInfo.role === 'admin' ? (
-                <>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>🔧</span>
-                    <div className={styles.permissionText}>
-                      <strong>システム管理</strong>
-                      <span>ユーザーとシステム設定を管理</span>
+                  {/* セキュリティヒント */}
+                  <div className="mt-3">
+                    <div className="alert alert-info py-2 mb-0">
+                      <small>🔒 定期的なパスワード変更でアカウントを保護</small>
                     </div>
                   </div>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>📦</span>
-                    <div className={styles.permissionText}>
-                      <strong>資産管理</strong>
-                      <span>資産の追加、編集、削除</span>
-                    </div>
-                  </div>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>👥</span>
-                    <div className={styles.permissionText}>
-                      <strong>ユーザー管理</strong>
-                      <span>ユーザー権限と情報を管理</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>👀</span>
-                    <div className={styles.permissionText}>
-                      <strong>資産閲覧</strong>
-                      <span>システム資産の閲覧と検索</span>
-                    </div>
-                  </div>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>📋</span>
-                    <div className={styles.permissionText}>
-                      <strong>貸出申請</strong>
-                      <span>資産貸出申請の提出</span>
-                    </div>
-                  </div>
-                  <div className={styles.permissionItem}>
-                    <span className={styles.permissionIcon}>📊</span>
-                    <div className={styles.permissionText}>
-                      <strong>個人統計</strong>
-                      <span>個人貸出記録の閲覧</span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+                </div> 
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
         {/* 右カラム - ログイン情報と貸出記録 */}
-        <div className={styles.rightColumn}>
-          {/* ログイン情報変更カード */}
-          <div className={styles.loginCard}>
-            <div className={styles.cardHeader}>
-              <h3>ログイン情報</h3>
-              {!isEditingLogin && (
-                <button 
-                  className={styles.editLoginButton}
-                  onClick={() => setIsEditingLogin(true)}
-                >
-                  ✏️ 変更
-                </button>
-              )}
-            </div>
-
-            {isEditingLogin ? (
-              <div className={styles.loginForm}>
-                <div className={styles.formGroup}>
-                  <label>現在のメールアドレス</label>
-                  <input 
-                    type="email" 
-                    value={loginInfo.currentEmail}
-                    disabled
-                    className={styles.disabledInput}
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>新しいメールアドレス</label>
-                  <input 
-                    type="email" 
-                    value={loginInfo.newEmail}
-                    onChange={(e) => handleLoginInfoChange('newEmail', e.target.value)}
-                    placeholder="新しいメールアドレスを入力"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>現在のパスワード</label>
-                  <input 
-                    type="password" 
-                    value={loginInfo.currentPassword}
-                    onChange={(e) => handleLoginInfoChange('currentPassword', e.target.value)}
-                    placeholder="現在のパスワードを入力"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>新しいパスワード</label>
-                  <input 
-                    type="password" 
-                    value={loginInfo.newPassword}
-                    onChange={(e) => handleLoginInfoChange('newPassword', e.target.value)}
-                    placeholder="新しいパスワードを入力"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>新しいパスワード（確認）</label>
-                  <input 
-                    type="password" 
-                    value={loginInfo.confirmPassword}
-                    onChange={(e) => handleLoginInfoChange('confirmPassword', e.target.value)}
-                    placeholder="新しいパスワードを再入力"
-                  />
-                </div>
-
-                <div className={styles.formActions}>
-                  <button 
-                    className={styles.cancelButton}
-                    onClick={handleCancelEdit}
-                  >
-                    キャンセル
-                  </button>
-                  <button 
-                    className={styles.saveButton}
-                    onClick={handleSaveLoginInfo}
-                  >
-                    変更を保存
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.loginInfo}>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>ログインメール:</span>
-                  <span className={styles.infoValue}>{loginInfo.currentEmail}</span>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>最終更新:</span>
-                  <span className={styles.infoValue}>2024-01-10 14:30</span>
-                </div>
-                <div className={styles.securityTip}>
-                  🔒 定期的なパスワード変更でアカウントを保護
-                </div>
-              </div>
-            )}
-          </div>
+        <Col lg={9} >
 
           {/* 資産貸出記録カード */}
-          <div className={styles.borrowCard}>
-            <div className={styles.cardHeader}>
-              <h3>資産貸出記録</h3>
-              <span className={styles.recordCount}>
-                全 {borrowRecords.length} 件
-              </span>
-            </div>
+          <Card className="shadow-sm">
+            <Card.Body className="p-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">資産貸出記録</h5>
+                <Badge bg="secondary">全 {borrowRecords.length} 件</Badge>
+              </div>
 
-            <div className={styles.recordsList}>
-              {borrowRecords.map(record => (
-                <div key={record.id} className={styles.recordItem}>
-                  <div className={styles.recordHeader}>
-                    <div className={styles.assetInfo}>
-                      <span className={styles.assetName}>{record.assetName}</span>
-                      <span className={styles.assetId}>{record.assetId}</span>
-                    </div>
-                    {getStatusBadge(record.status)}
-                  </div>
-                  
-                  <div className={styles.recordDetails}>
-                    <div className={styles.detailRow}>
-                      <span>貸出日:</span>
-                      <span>{record.borrowDate}</span>
-                    </div>
-                    <div className={styles.detailRow}>
-                      <span>返却日:</span>
-                      <span>{record.returnDate || '未返却'}</span>
-                    </div>
-                    {record.notes && (
-                      <div className={styles.detailRow}>
-                        <span>備考:</span>
-                        <span className={styles.notes}>{record.notes}</span>
+              <div style={{ minHeight: "900px", overflowY: 'auto' }}>
+                {borrowRecords.map(record => (
+                  <Card 
+                    key={record.id} 
+                    className="mb-3 border"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => console.log('Record clicked:', record.id)}
+                  >
+                    <Card.Body className="p-3">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                          <div className="fw-bold mb-1">{record.assetName}</div>
+                          <small className="text-muted">{record.assetId}</small>
+                        </div>
+                        {getStatusBadge(record.status)}
                       </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button className={styles.viewAllButton}>
-              全ての貸出記録を見る →
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+                      
+                      <div className="small">
+                        <div className="d-flex justify-content-between mb-1">
+                          <span className="text-muted">貸出日:</span>
+                          <span>{record.borrowDate}</span>
+                        </div>
+                        <div className="d-flex justify-content-between mb-1">
+                          <span className="text-muted">返却日:</span>
+                          <span>{record.returnDate || '未返却'}</span>
+                        </div>
+                        {record.notes && (
+                          <div className="d-flex justify-content-between">
+                            <span className="text-muted">備考:</span>
+                            <span className="text-end" style={{ maxWidth: '60%' }}>
+                              {record.notes}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

@@ -92,3 +92,76 @@
   flex: 1;
   background-color: #fff;
 }
+
+/* 管理画面菜单样式 */
+.admin-menu {
+  position: relative;
+}
+
+.admin-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.admin-menu-header:hover {
+  background-color: #f8f9fa;
+}
+
+.admin-menu-header.active {
+  background-color: #e9ecef;
+  font-weight: bold;
+}
+
+.dropdown-arrow {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.admin-submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+.admin-submenu li a {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem 0.6rem 2rem;
+  color: #495057;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.admin-submenu li a:hover {
+  background-color: #e9ecef;
+}
+
+.admin-submenu li a.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.menu-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.pending-badge {
+  background-color: #dc3545;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-left: auto;
+}
