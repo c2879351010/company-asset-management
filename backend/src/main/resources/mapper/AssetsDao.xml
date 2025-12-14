@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.AssetsDao">
+
+    <resultMap type="com.example.backend.entity.Assets" id="AssetsMap">
+        <result property="assetId" column="ASSET_ID" jdbcType="VARCHAR"/>
+        <result property="name" column="NAME" jdbcType="VARCHAR"/>
+        <result property="description" column="DESCRIPTION" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="purchaseDate" column="PURCHASE_DATE" jdbcType="TIMESTAMP"/>
+        <result property="imageUrl" column="IMAGE_URL" jdbcType="VARCHAR"/>
+        <result property="categories" column="CATEGORIES" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="assetId" useGeneratedKeys="true">
+        insert into C##TEST.ASSETS(NAME, DESCRIPTION, STATUS, PURCHASE_DATE, IMAGE_URL, CATEGORIES)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.name}, #{entity.description}, #{entity.status}, #{entity.purchaseDate}, #{entity.imageUrl}, #{entity.categories})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="assetId" useGeneratedKeys="true">
+        insert into C##TEST.ASSETS(NAME, DESCRIPTION, STATUS, PURCHASE_DATE, IMAGE_URL, CATEGORIES)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.description}, #{entity.status}, #{entity.purchaseDate}, #{entity.imageUrl}, #{entity.categories})
+        </foreach>
+        on duplicate key update
+NAME = values(NAME) , DESCRIPTION = values(DESCRIPTION) , STATUS = values(STATUS) , PURCHASE_DATE = values(PURCHASE_DATE) , IMAGE_URL = values(IMAGE_URL) , CATEGORIES = values(CATEGORIES)     </insert>
+
+</mapper>
+

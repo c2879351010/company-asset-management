@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import {
     Row,
     Col,
@@ -14,20 +14,64 @@ import {
   import { mockUsers } from '@mocks/User';
   import UserTable from '@components/tables/UserTable';
   import AddUserModal from '@components/modals/AddUserModal'; // 导入新的模态框组件
-
+  import axios from 'axios';
+  import appConfig from '@config/app.config';
 function UsersPanel() {
     const [showUserModal, setShowUserModal] = useState(false);
-    const [users, setUsers] = useState(mockUsers);
+    const [users, setUsers] = useState(null);
     const [isEditingUser, setIsEditingUser] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
-
+    const [loading, setLoading] = useState(false);
+    const [refetchTrigger, setRefetchTrigger] = useState(0);
    
 
-    const handleDeleteUser = (user) => {
-        if (window.confirm(`ユーザー "${user.name}" を削除してもよろしいですか？`)) {
-            setUsers(prev => prev.filter(u => u.employeeId !== user.employeeId));
+    const handleDeleteUser = async(user) => {
+        console.log('删除用户:', user);
+        
+        if (window.confirm(`ユーザー "${user.userId}" を削除してもよろしいですか？`)) {
+          try {
+            const token = localStorage.getItem('authToken')
+              const response = await axios.get(appConfig.apiBaseUrl + '/api/admin/users',{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+              setUsers(response.data);
+          } catch (err) {
+              console.error('获取用户列表失败:', err);
+              alert('用户列表获取失败');
+              // 可选：回退到mock数据
+              // setUsers(mockUsers);
+          } finally {
+              setLoading(false);
+          }
+            setUsers(prev => prev.filter(u => u.userId !== user.userId));
         }
     };
+
+    // 获取用户列表的函数
+    const fetchUsers = async () => {
+      setLoading(true);
+      
+      try {
+        const token = localStorage.getItem('authToken')
+          const response = await axios.get(appConfig.apiBaseUrl + '/api/admin/users',{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+          setUsers(response.data);
+      } catch (err) {
+          console.error('获取用户列表失败:', err);
+          alert('用户列表获取失败');
+          // 可选：回退到mock数据
+          // setUsers(mockUsers);
+      } finally {
+          setLoading(false);
+      }
+  };
 
     const handleRoleChange = (user) => {
         console.log('権限変更:', user);
@@ -42,21 +86,22 @@ function UsersPanel() {
     };
 
     // 处理添加新用户
-    const handleAddUser = (userData) => {
-      // 这里可以调用API添加用户
-      console.log('新規ユーザーを追加:', userData);
+    const handleAddUser = async (userData) => {
+      setLoading(true);
+        try {
+            const response = await axios.post(appConfig.apiBaseUrl+'/api/auth/register', userData);
 
-      // 模拟添加用户到列表
-      const newUser = {
-        ...userData,
-        id: Date.now(), // 临时ID
-        createdAt: new Date().toISOString()
-      };
-      
-      setUsers(prev => [...prev, newUser]);
-      
-      // 显示成功消息
-      alert('ユーザーが正常に追加されました');
+            console.log('Login response:', response);
+            // 重定向到主页
+            alert('ユーザーが正常に追加されました');
+            setRefetchTrigger(prev => prev + 1);
+        } catch (err) {
+            console.error('Login error:', err);
+            alert('ユーザーの追加に失敗しました。もう一度お試しください。');
+        } finally {
+            setLoading(false);
+        }
+
     };
 
     // 关闭用户模态框
@@ -79,14 +124,35 @@ function UsersPanel() {
     };
 
      // 处理编辑用户
-     const handleEditUser = (userData) => {
+     const handleEditUser = async(userData) => {
       // 调用API更新用户信息
-      const updatedUsers = users.map(user => 
-        user.employeeId === userData.employeeId 
-          ?  userData : user
-        );
-        setUsers(updatedUsers);
+
+      
+      setLoading(true);
+        try {
+            const token = localStorage.getItem('authToken')
+            console.log('编辑用户数据:', userData);
+            const response = await axios.put(appConfig.apiBaseUrl+'/api/admin/users', userData,
+            {headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+          }});
+            console.log('Login response:', response);
+            // 重定向到主页
+            alert('ユーザー情報が正常に更新されました');
+            setRefetchTrigger(prev => prev + 1);
+        } catch (err) {
+            console.error('Login error:', err);
+            alert('ユーザー情報の更新に失敗しました。もう一度お試しください。');
+        } finally {
+            setLoading(false);
+        }
     };
+
+    // 组件挂载时调用
+    useEffect(() => {
+        fetchUsers();
+    }, [refetchTrigger]);
     return (
       <div className="p-4">
         {/* 内容头部 */}
@@ -115,7 +181,7 @@ function UsersPanel() {
         </Col>
   
         {/* 資産テーブル - 使用通用组件 */}
-        <Card className="border-0 shadow-sm">
+        {users!=null &&<Card className="border-0 shadow-sm">
           <Card.Body className="p-0">
               <UserTable 
                 users={users}
@@ -125,7 +191,7 @@ function UsersPanel() {
                 showActions={true}
               />
           </Card.Body>
-        </Card>
+        </Card>}
 
         {/* 添加用户Modal */}
         <AddUserModal

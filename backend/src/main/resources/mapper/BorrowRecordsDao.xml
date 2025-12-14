@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.BorrowRecordsDao">
+
+    <resultMap type="com.example.backend.entity.BorrowRecords" id="BorrowRecordsMap">
+        <result property="recordId" column="RECORD_ID" jdbcType="VARCHAR"/>
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="assetId" column="ASSET_ID" jdbcType="VARCHAR"/>
+        <result property="applyDate" column="APPLY_DATE" jdbcType="VARCHAR"/>
+        <result property="plannedBorrowDate" column="PLANNED_BORROW_DATE" jdbcType="TIMESTAMP"/>
+        <result property="plannedReturnDate" column="PLANNED_RETURN_DATE" jdbcType="TIMESTAMP"/>
+        <result property="actualBorrowDate" column="ACTUAL_BORROW_DATE" jdbcType="TIMESTAMP"/>
+        <result property="actualReturnDate" column="ACTUAL_RETURN_DATE" jdbcType="TIMESTAMP"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+        <result property="purpose" column="PURPOSE" jdbcType="VARCHAR"/>
+        <result property="adminNotes" column="ADMIN_NOTES" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="CREATED_AT" jdbcType="VARCHAR"/>
+        <result property="updatedAt" column="UPDATED_AT" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into C##TEST.BORROW_RECORDS(USER_ID, ASSET_ID, APPLY_DATE, PLANNED_BORROW_DATE, PLANNED_RETURN_DATE, ACTUAL_BORROW_DATE, ACTUAL_RETURN_DATE, STATUS, PURPOSE, ADMIN_NOTES, CREATED_AT, UPDATED_AT)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userId}, #{entity.assetId}, #{entity.applyDate}, #{entity.plannedBorrowDate}, #{entity.plannedReturnDate}, #{entity.actualBorrowDate}, #{entity.actualReturnDate}, #{entity.status}, #{entity.purpose}, #{entity.adminNotes}, #{entity.createdAt}, #{entity.updatedAt})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="recordId" useGeneratedKeys="true">
+        insert into C##TEST.BORROW_RECORDS(USER_ID, ASSET_ID, APPLY_DATE, PLANNED_BORROW_DATE, PLANNED_RETURN_DATE, ACTUAL_BORROW_DATE, ACTUAL_RETURN_DATE, STATUS, PURPOSE, ADMIN_NOTES, CREATED_AT, UPDATED_AT)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.assetId}, #{entity.applyDate}, #{entity.plannedBorrowDate}, #{entity.plannedReturnDate}, #{entity.actualBorrowDate}, #{entity.actualReturnDate}, #{entity.status}, #{entity.purpose}, #{entity.adminNotes}, #{entity.createdAt}, #{entity.updatedAt})
+        </foreach>
+        on duplicate key update
+USER_ID = values(USER_ID) , ASSET_ID = values(ASSET_ID) , APPLY_DATE = values(APPLY_DATE) , PLANNED_BORROW_DATE = values(PLANNED_BORROW_DATE) , PLANNED_RETURN_DATE = values(PLANNED_RETURN_DATE) , ACTUAL_BORROW_DATE = values(ACTUAL_BORROW_DATE) , ACTUAL_RETURN_DATE = values(ACTUAL_RETURN_DATE) , STATUS = values(STATUS) , PURPOSE = values(PURPOSE) , ADMIN_NOTES = values(ADMIN_NOTES) , CREATED_AT = values(CREATED_AT) , UPDATED_AT = values(UPDATED_AT)     </insert>
+
+</mapper>
+

@@ -39,8 +39,7 @@ const AssetListPage = () => {
   // 資産をフィルタリング
   const filteredAssets = assets.filter(asset => {
     const matchesSearch = asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         asset.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         asset.description.toLowerCase().includes(searchTerm.toLowerCase());
+                         asset.assetCode.toLowerCase().includes(searchTerm.toLowerCase())
        return matchesSearch;
   });
 
@@ -105,7 +104,7 @@ const AssetListPage = () => {
       return;
     }
 
-    // ここにAPI呼び出しを追加可能
+    // API
     console.log('貸出申請を送信:', {
       asset: selectedAsset,
       form: borrowForm
@@ -181,7 +180,7 @@ const AssetListPage = () => {
                 >
                   {filteredAssets.map(asset => (
                     <Card 
-                      key={asset.id}
+                      key={asset.assetCode}
                       className={`shadow-sm ${asset.status === 'available' ? 'clickable' : ''}`}
                       style={{ 
                         width: '100%',

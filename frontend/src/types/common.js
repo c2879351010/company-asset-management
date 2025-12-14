@@ -1,10 +1,12 @@
 /* User */
 export const userRole = {
-    name: '',
-    employeeId:'',
+    firstName: '',
+    lastName: '',
+    firstKana: '',
+    lastKana: '',
     email: '',
-    passworldHash: '',
-    role: 'User'
+    status: 'Active',
+    role: 'USER'
 }
 export const userType = {
     Admin: '管理者',

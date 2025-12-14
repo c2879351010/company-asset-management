@@ -24,7 +24,6 @@ const UserTable = ({
     
     // 计算总页数
     const totalPages = Math.ceil(users.length / itemsPerPage);
-    
     // 获取当前页的数据
     const currentData = users.slice(
         (currentPage - 1) * itemsPerPage,
@@ -39,9 +38,9 @@ const UserTable = ({
     // 获取角色对应的徽章颜色
     const getRoleBadgeVariant = (role) => {
         switch (role) {
-            case 'Admin':
+            case 'ADMIN':
                 return 'warning';
-            case 'User':
+            case 'USER':
                 return 'light';
             default:
                 return 'secondary';
@@ -125,6 +124,8 @@ const UserTable = ({
                     </thead>
                     <tbody>
                         {currentData.map((user, index) => (
+                            //console.log(user.userId,localStorage.getItem('userId'),user.userId == localStorage.getItem('userId')),
+                            //console.log(user.status),
                             <tr key={user.employeeId}>
                                 <td className="ps-4 py-3 align-middle">
                                     <div 
@@ -150,7 +151,7 @@ const UserTable = ({
                                 <td className="py-3 text-center align-middle">
                                     <Badge 
                                         bg={getRoleBadgeVariant(user.role)} 
-                                        text={user.role === 'User' ? 'dark' : 'dark'}
+                                        text={user.role === 'USER' ? 'dark' : 'dark'}
                                         className="fw-normal"
                                     >
                                         {userType[user.role] || user.role}
@@ -164,13 +165,14 @@ const UserTable = ({
                                                 size="sm"
                                                 className="border-0"
                                                 title="編集"
+                                                disabled = {user.userId == localStorage.getItem('userId')}
                                                 onClick={() => {
                                                     onEdit && onEdit(user);
                                                 }}
                                             >
                                                 ✏️
                                             </Button>
-                                            <Button 
+                                            {/* <Button 
                                                 variant="outline-secondary" 
                                                 size="sm"
                                                 className="border-0"
@@ -178,12 +180,13 @@ const UserTable = ({
                                                 onClick={() => onRoleChange && onRoleChange(user)}
                                             >
                                                 🔑
-                                            </Button>
+                                            </Button> */}
                                             <Button 
                                                 variant="outline-danger" 
                                                 size="sm"
                                                 className="border-0"
                                                 title="削除"
+                                                disabled = {user.userId == localStorage.getItem('userId')|| user.status == 'Active'}
                                                 onClick={() => onDelete && onDelete(user)}
                                             >
                                                 🗑️

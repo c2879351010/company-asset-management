@@ -16,7 +16,7 @@ function MyPage() {
     name: '山田 太郎',
     email: 'yamada@example.com',
     employeeId: 'aAdD1234-5678',
-    role: 'admin' ,
+    role: 'ADMIN' ,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -146,7 +146,7 @@ function MyPage() {
   };
 
   const getRoleBadge = (role) => {
-    return role === 'admin' 
+    return role === 'ADMIN' 
       ? <Badge bg="warning" className="ms-2">管理者</Badge>
       : <Badge bg="info" className="ms-2">一般ユーザー</Badge>;
   };
@@ -210,7 +210,7 @@ function MyPage() {
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="text-muted">権限レベル:</span>
                       <span className="fw-medium">
-                        {userInfo.role === 'admin' ? 'システム管理者' : '一般ユーザー'}
+                        {userInfo.role === 'ADMIN' ? 'システム管理者' : '一般ユーザー'}
                       </span>
                     </div>
                   </div>

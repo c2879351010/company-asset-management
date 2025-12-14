@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Row, Col, Card } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col, Card,Collapse } from 'react-bootstrap';
 import { userRole,userType } from '@types/common';
+import { isVisible } from '@testing-library/user-event/dist/utils';
 const AddUserModal = ({ 
   show, 
   onHide, 
@@ -16,10 +17,13 @@ const AddUserModal = ({
   useEffect(() => {
     if (isEditing && editingUser) {
       setNewUser({
-        name: editingUser.name || '',
-        employeeId: editingUser.employeeId || '',
+        firstName: editingUser.firstName || '',
+        lastName: editingUser.lastName || '',
+        firstKana: editingUser.firstKana || '',
+        lastKana: editingUser.lastKana || '',
+        userId: editingUser.userId || '',
         email: editingUser.email || '',
-        role: editingUser.role || 'User',
+        role: editingUser.role || 'USER',
         status: editingUser.status || 'active'
       });
       // 编辑模式下清空密码字段
@@ -28,6 +32,8 @@ const AddUserModal = ({
     } else {
       // 添加模式下重置表单
       setNewUser(userRole);
+      newUser.status = 'Active';
+      newUser.role = 'USER';
       setPassword('');
       setConfirmPassword('');
     }
@@ -43,7 +49,7 @@ const AddUserModal = ({
   // 提交用户数据（新增或编辑）
   const handleSubmit = () => {
     // 验证必填字段
-    if (!newUser.name || !newUser.email || !newUser.employeeId) {
+    if (!newUser.firstName||!newUser.lastName || !newUser.email ) {
       alert('必須項目を入力してください');
       return;
     }
@@ -142,13 +148,24 @@ const AddUserModal = ({
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
-                  姓名 <span className="text-danger">*</span>
+                  姓 <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  value={newUser.name}
-                  onChange={(e) => handleUserInputChange('name', e.target.value)}
-                  placeholder="例: 山田 太郎"
+                  value={newUser.lastName}
+                  onChange={(e) => handleUserInputChange('lastName', e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                  名 <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newUser.firstName}
+                  onChange={(e) => handleUserInputChange('firstName', e.target.value)}
                 />
               </Form.Group>
             </Col>
@@ -156,13 +173,37 @@ const AddUserModal = ({
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>
+                フリカナ（姓） <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newUser.lastKana}
+                  onChange={(e) => handleUserInputChange('lastKana', e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>
+                フリカナ（名） <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newUser.firstKana}
+                  onChange={(e) => handleUserInputChange('firstKana', e.target.value)}
+                />
+              </Form.Group>
+            </Col>
+            {/* <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>
                   ID <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="例: EMP001"
-                  value={newUser.employeeId}
-                  onChange={(e) => handleUserInputChange('employeeId', e.target.value)}
+                  value={newUser.userId}
+                  onChange={(e) => handleUserInputChange('userId', e.target.value)}
                   disabled={isEditing} // 编辑模式下ID不可修改
                 />
                 {isEditing && (
@@ -171,7 +212,7 @@ const AddUserModal = ({
                   </Form.Text>
                 )}
               </Form.Group>
-            </Col>
+            </Col> */}
             
             <Col md={6}>
               <Form.Group className="mb-3">
@@ -180,69 +221,86 @@ const AddUserModal = ({
                 </Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="例: yamada@company.com"
                   value={newUser.email}
                   onChange={(e) => handleUserInputChange('email', e.target.value)}
                 />
               </Form.Group>
             </Col>
 
-            <Col md={6}>
+            <Col md={3}>
               <Form.Group className="mb-3">
                 <Form.Label>権限</Form.Label>
                 <Form.Select
                   value={newUser.role}
                   onChange={(e) => handleUserInputChange('role', e.target.value)}
                 >
-                  <option value="User">一般ユーザー</option>
-                  <option value="Admin">管理者</option>
+                  <option value="USER">一般ユーザー</option>
+                  <option value="ADMIN">管理者</option>
                 </Form.Select>
+                
               </Form.Group>
             </Col>
-
+            <Col md={3}>
+              <Form.Group className="mb-3">
+                <Form.Label>状態</Form.Label>
+                <Form.Select
+                  value={newUser.status}
+                  onChange={(e) => handleUserInputChange('status', e.target.value)}
+                  disabled = {!isEditing}
+                >
+                  <option value="Active">利用可能</option>
+                  <option value="Lock">ロックダウン</option>
+                </Form.Select>
+                
+              </Form.Group>
+            </Col>
             {/* パスワード設定（オプション） */}
             <Col md={12}>
-              <Card className="border-0 bg-light">
-                <Card.Body>
-                  <h6 className="mb-3">
-                    {isEditing ? '🔐 パスワード変更' : '🔐 初期パスワード設定'}
-                  </h6>
-                  <p className="text-muted small mb-3">
-                    {isEditing 
-                      ? 'パスワードを変更する場合のみ入力してください。空白の場合は変更されません。'
-                      : 'パスワードを設定しない場合、システムが自動生成した初期パスワードがメールで送信されます。'
-                    }
-                  </p>
-                  <Row className="g-3">
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>
-                          {isEditing ? '新しいパスワード' : '初期パスワード'}
-                        </Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder={isEditing ? "新しいパスワードを入力" : "初期パスワードを入力"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group>
-                        <Form.Label>
-                          {isEditing ? 'パスワード確認' : 'パスワード確認'}
-                        </Form.Label>
-                        <Form.Control
-                          type="password"
-                          placeholder="パスワードを再入力"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Card>
+              <Collapse in={!isEditing}>
+                <Card className="border-0 bg-light">
+                  <Card.Body>
+                    <h6 className="mb-3">
+                      {isEditing ? '🔐 パスワード変更' : '🔐 初期パスワード設定'}
+                    </h6>
+                    <p className="text-muted small mb-3">
+                      {isEditing 
+                        ? 'パスワードを変更する場合のみ入力してください。空白の場合は変更されません。'
+                        : 'パスワードを設定しない場合、システムが自動生成した初期パスワードがメールで送信されます。'
+                      }
+                    </p>
+                    <Row className="g-3">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>
+                            {isEditing ? '新しいパスワード' : '初期パスワード'}
+                          </Form.Label>
+                          <Form.Control
+                            type="password"
+                            placeholder={isEditing ? "新しいパスワードを入力" : "初期パスワードを入力"}
+                            value={password}
+                            disabled={isEditing}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>
+                            {isEditing ? 'パスワード確認' : 'パスワード確認'}
+                          </Form.Label>
+                          <Form.Control
+                            type="password"
+                            placeholder="パスワードを再入力"
+                            value={confirmPassword}
+                            disabled={isEditing}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Collapse>
             </Col>
           </Row>
         </Form>

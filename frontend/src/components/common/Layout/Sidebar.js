@@ -3,7 +3,7 @@ import { useState } from 'react';
 import styles from './Layout.module.css';
 
 const Sidebar = () => {
-  const userRole = JSON.parse(localStorage.getItem('user') || '{}').role;
+  const userRole = localStorage.getItem('userRole');
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
 
@@ -28,7 +28,7 @@ const Sidebar = () => {
         </li>
         
         {/* 管理者のみ表示 */}
-        {userRole === 'admin' && (
+        {userRole === 'ADMIN' && (
           <>
             <li className={styles["admin-menu"]}>
               <div 

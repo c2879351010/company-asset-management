@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.UsersDao">
+
+    <resultMap type="com.example.backend.entity.Users" id="UsersMap">
+        <result property="userId" column="USER_ID" jdbcType="VARCHAR"/>
+        <result property="firstName" column="FIRST_NAME" jdbcType="VARCHAR"/>
+        <result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+        <result property="passwordHash" column="PASSWORD_HASH" jdbcType="VARCHAR"/>
+        <result property="role" column="ROLE" jdbcType="VARCHAR"/>
+        <result property="lastName" column="LAST_NAME" jdbcType="VARCHAR"/>
+        <result property="firstKana" column="FIRST_KANA" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="CREATED_AT" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="UPDATED_AT" jdbcType="TIMESTAMP"/>
+        <result property="lastKana" column="LAST_KANA" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into C##TEST.USERS(FIRST_NAME, EMAIL, PASSWORD_HASH, ROLE, LAST_NAME, FIRST_KANA, CREATED_AT, UPDATED_AT, LAST_KANA, STATUS)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.firstName}, #{entity.email}, #{entity.passwordHash}, #{entity.role}, #{entity.lastName}, #{entity.firstKana}, #{entity.createdAt}, #{entity.updatedAt}, #{entity.lastKana}, #{entity.status})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into C##TEST.USERS(FIRST_NAME, EMAIL, PASSWORD_HASH, ROLE, LAST_NAME, FIRST_KANA, CREATED_AT, UPDATED_AT, LAST_KANA, STATUS)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.firstName}, #{entity.email}, #{entity.passwordHash}, #{entity.role}, #{entity.lastName}, #{entity.firstKana}, #{entity.createdAt}, #{entity.updatedAt}, #{entity.lastKana}, #{entity.status})
+        </foreach>
+        on duplicate key update
+FIRST_NAME = values(FIRST_NAME) , EMAIL = values(EMAIL) , PASSWORD_HASH = values(PASSWORD_HASH) , ROLE = values(ROLE) , LAST_NAME = values(LAST_NAME) , FIRST_KANA = values(FIRST_KANA) , CREATED_AT = values(CREATED_AT) , UPDATED_AT = values(UPDATED_AT) , LAST_KANA = values(LAST_KANA) , STATUS = values(STATUS)     </insert>
+
+</mapper>
+

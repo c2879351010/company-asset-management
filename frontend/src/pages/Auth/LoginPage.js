@@ -10,6 +10,7 @@ import {
   Alert
 } from 'react-bootstrap';
 import axios from 'axios';
+import appConfig from '@config/app.config';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -27,18 +28,43 @@ const LoginPage = () => {
     }, [isAuthenticated, navigate]);
 
     const handleLogin = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 防止表单默认提交行为
+    
+        // 前端基础验证
+        if (!email || !password) {
+            alert('请填写邮箱和密码');
+        return;
+        }
+
+        // 邮箱格式验证
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert('请输入有效的邮箱地址');
+        return;
+        }
+
         setLoading(true);
-        setError('');
-        
-        // 模拟登录成功
-        setTimeout(() => {
-            localStorage.setItem('authToken', '1123123123');
-            localStorage.setItem('email',JSON.stringify({ email: email } ));
-            localStorage.setItem('user', JSON.stringify({ role: password == '123123'? 'admin':'user' } ));
-            setLoading(false);
+        try {
+            const response = await axios.post(appConfig.apiBaseUrl+'/api/auth/login', {
+                email,
+                password
+            });
+
+            console.log('Login response:', response);
+            localStorage.setItem('authToken', response.data.token);
+            localStorage.setItem('userId', response.data.userId);
+            localStorage.setItem('userEmail', response.data.email);
+            localStorage.setItem('loginTime', new Date().toISOString());
+            localStorage.setItem('userRole', response.data.role);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+            // 重定向到主页
             navigate('/', { replace: true });
-        }, 1000);
+        } catch (err) {
+            console.error('Login error:', err);
+            setError('ログインに失敗しました。メールアドレスとパスワードを確認してください。');
+        } finally {
+            setLoading(false);
+        }
 
     };
 

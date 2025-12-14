@@ -13,6 +13,7 @@ module.exports = {
       '@types': path.resolve(__dirname,'src/types'),
       '@mocks': path.resolve(__dirname,'src/mocks'),
       '@services': path.resolve(__dirname,'src/services'),
+      '@config': path.resolve(__dirname,'src/config'),
     }
   }
 };
